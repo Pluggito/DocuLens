@@ -4,16 +4,19 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "clean": "turbo run clean && rm -rf node_modules",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore"
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
+    "db:push": "pnpm --filter @repo/db db:push",
+    "db:migrate": "pnpm --filter @repo/db db:migrate",
+    "db:generate": "pnpm --filter @repo/db db:generate",
+    "db:studio": "pnpm --filter @repo/db db:studio"
   },
   "devDependencies": {
-    "@types/minimatch": "^6.0.0",
     "prettier": "^3.1.1",
     "turbo": "^2.10.0"
   },
   "engines": {
     "node": ">=18"
   },
-  "name": "with-react-native-web",
+  "name": "doculens-ai",
   "packageManager": "pnpm@10.33.0"
 }

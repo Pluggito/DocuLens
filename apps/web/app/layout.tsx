@@ -1,3 +1,6 @@
+import { Providers } from "./providers";
+import "../styles/global.css";
+
 export default function RootLayout({
   children,
 }: {
@@ -5,7 +8,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="bg-[#fffaf7] text-slate-900 font-sans min-h-screen overflow-x-hidden relative">
+        <Providers>
+          <div className="relative z-10">{children}</div>
+        </Providers>
+      </body>
     </html>
   );
 }
