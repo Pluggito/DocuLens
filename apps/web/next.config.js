@@ -1,4 +1,5 @@
 module.exports = {
+  serverExternalPackages: ['tesseract.js', 'pdf2pic'],
   reactStrictMode: true,
   turbopack: {
     resolveAlias: {

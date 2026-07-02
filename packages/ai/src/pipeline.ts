@@ -9,14 +9,28 @@ export interface ProcessingResult {
   processingTimeMs: number;
 }
 
-export async function processDocument(fileUrl: string, mimeType?: string): Promise<ProcessingResult> {
+export async function processDocument(
+  fileUrl: string, 
+  mimeType?: string,
+  forcedType?: string
+): Promise<ProcessingResult> {
   const startTime = Date.now();
 
   // Stage 1: OCR
   const rawText = await extractText(fileUrl, mimeType);
 
-  // Stage 2: Classify
-  const classification = await classifyDocument(rawText);
+  // Stage 2: Classify (Skip if forcedType is provided)
+  let classification: DocumentClassification;
+  
+  if (forcedType) {
+    classification = {
+      documentType: forcedType as any,
+      confidence: 1.0,
+      reasoning: "Manually overridden by user",
+    };
+  } else {
+    classification = await classifyDocument(rawText);
+  }
 
   // Stage 3 & 4: Route to schema + Extract
   // @ts-ignore

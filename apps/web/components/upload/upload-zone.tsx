@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { UploadCloud, File, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { ExtractionResult } from "./extraction-result";
 
@@ -13,6 +13,28 @@ export function UploadZone() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (state === "uploading") {
+      setProgress(0);
+      interval = setInterval(() => {
+        setProgress((prev) => Math.min(prev + 5, 50));
+      }, 200);
+    } else if (state === "processing") {
+      setProgress(50);
+      interval = setInterval(() => {
+        setProgress((prev) => Math.min(prev + 2, 95));
+      }, 500);
+    } else if (state === "success") {
+      setProgress(100);
+    } else {
+      setProgress(0);
+    }
+    return () => clearInterval(interval);
+  }, [state]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -56,7 +78,7 @@ export function UploadZone() {
 
       if (!uploadRes.ok) {
         const errorData = await uploadRes.json();
-        throw new Error(errorData.error || "Failed to upload document");
+        throw new Error(errorData.message || errorData.error || "Failed to upload document");
       }
 
       const { document } = await uploadRes.json();
@@ -158,7 +180,7 @@ export function UploadZone() {
         )}
 
         {(state === "uploading" || state === "processing") && (
-          <div className="flex flex-col items-center space-y-5 animate-in fade-in zoom-in-95 duration-300">
+          <div className="flex flex-col items-center space-y-5 animate-in fade-in zoom-in-95 duration-300 w-full max-w-sm mx-auto">
             <div className="relative">
               <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center">
                 <File size={28} className="opacity-50" />
@@ -171,9 +193,20 @@ export function UploadZone() {
               <p className="text-lg font-semibold text-slate-900">
                 {state === "uploading" ? "Uploading document..." : "AI is analyzing..."}
               </p>
-              <p className="text-slate-500 mt-1">
+              <p className="text-slate-500 mt-1 truncate max-w-[250px]">
                 {selectedFile?.name}
               </p>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="w-full mt-2">
+              <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-blue-600 rounded-full transition-all duration-300 ease-out" 
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <p className="text-xs text-slate-400 mt-2 font-medium">{progress}%</p>
             </div>
           </div>
         )}

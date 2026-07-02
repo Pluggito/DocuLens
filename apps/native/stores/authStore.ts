@@ -5,7 +5,7 @@ import Platform from "react-native";
 // In React Native development, localhost/127.0.0.1 works on iOS simulators.
 // On Android emulator, localhost points to the emulator itself, so we use 10.0.2.2.
 // In production, change this to your actual deployed backend URL.
-const API_URL = "http://localhost:3000"; 
+const API_URL = process.env.EXPO_PUBLIC_API_URL || "http://localhost:3000"; 
 
 interface User {
   id: string;
@@ -13,6 +13,7 @@ interface User {
   fullName: string;
   phoneNumber: string | null;
   image: string | null;
+  role?: string;
 }
 
 interface AuthState {

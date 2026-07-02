@@ -28,6 +28,8 @@ PODS:
     - Yoga
   - ExpoAsset (55.0.17):
     - ExpoModulesCore
+  - ExpoDocumentPicker (55.0.14):
+    - ExpoModulesCore
   - ExpoDomWebView (55.0.6):
     - ExpoModulesCore
   - ExpoFileSystem (55.0.23):
@@ -43,6 +45,8 @@ PODS:
     - SDWebImageAVIFCoder (~> 0.11.0)
     - SDWebImageSVGCoder (~> 1.7.0)
     - SDWebImageWebPCoder (~> 0.14.6)
+  - ExpoImagePicker (55.0.21):
+    - ExpoModulesCore
   - ExpoKeepAwake (55.0.8):
     - ExpoModulesCore
   - ExpoLinking (55.0.16):
@@ -1503,6 +1507,50 @@ PODS:
     - React-RCTFBReactNativeSpec
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
+  - react-native-blob-util (0.24.10):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-Core-prebuilt
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
+  - react-native-pdf (7.0.4):
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-Core-prebuilt
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
   - react-native-safe-area-context (5.6.2):
     - hermes-engine
     - RCTRequired
@@ -2210,11 +2258,13 @@ DEPENDENCIES:
   - "EXConstants (from `../../../node_modules/.pnpm/expo-constants@55.0.16_expo@55.0.27_react-native@0.83.6_@babel+core@7.29.7_@react-nativ_fa565973b5666ccf7aeb4f4d3f740441/node_modules/expo-constants/ios`)"
   - "Expo (from `../../../node_modules/.pnpm/expo@55.0.27_@babel+core@7.29.7_@expo+dom-webview@55.0.6_@expo+metro-runtime@55.0.11_ex_cd0c30d4f765a784a37b230cc70316af/node_modules/expo`)"
   - "ExpoAsset (from `../../../node_modules/.pnpm/expo-asset@55.0.17_expo@55.0.27_react-native@0.83.6_@babel+core@7.29.7_@react-native+me_1f891d844cf2f18f53aac656baa6640d/node_modules/expo-asset/ios`)"
+  - "ExpoDocumentPicker (from `../../../node_modules/.pnpm/expo-document-picker@55.0.14_expo@55.0.27/node_modules/expo-document-picker/ios`)"
   - "ExpoDomWebView (from `../../../node_modules/.pnpm/@expo+dom-webview@55.0.6_expo@55.0.27_react-native@0.83.6_@babel+core@7.29.7_@react-nat_6785043b4e20c95f0d32240cc14b5a59/node_modules/@expo/dom-webview/ios`)"
   - "ExpoFileSystem (from `../../../node_modules/.pnpm/expo-file-system@55.0.23_expo@55.0.27_react-native@0.83.6_@babel+core@7.29.7_@react-nat_1beb357ae6cd8af3cdbff88ddcdfa7e6/node_modules/expo-file-system/ios`)"
   - "ExpoFont (from `../../../node_modules/.pnpm/expo-font@55.0.8_expo@55.0.27_react-native@0.83.6_@babel+core@7.29.7_@react-native+metr_e6cd5b60c09bd8bb374b829ee54a4176/node_modules/expo-font/ios`)"
   - "ExpoGlassEffect (from `../../../node_modules/.pnpm/expo-glass-effect@55.0.11_expo@55.0.27_react-native@0.83.6_@babel+core@7.29.7_@react-na_ab155ceb0155ff25e751e573c705d2da/node_modules/expo-glass-effect/ios`)"
   - "ExpoImage (from `../../../node_modules/.pnpm/expo-image@55.0.11_expo@55.0.27_react-native-web@0.21.2_react-dom@19.2.0_react@19.2.0___db39dd13fb0a6b715b6a8ca02b1d3280/node_modules/expo-image/ios`)"
+  - "ExpoImagePicker (from `../../../node_modules/.pnpm/expo-image-picker@55.0.21_expo@55.0.27/node_modules/expo-image-picker/ios`)"
   - "ExpoKeepAwake (from `../../../node_modules/.pnpm/expo-keep-awake@55.0.8_expo@55.0.27_react@19.2.0/node_modules/expo-keep-awake/ios`)"
   - "ExpoLinking (from `../../../node_modules/.pnpm/expo-linking@55.0.16_expo@55.0.27_react-native@0.83.6_@babel+core@7.29.7_@react-native+_e2827159416fb81436529a15a4421b47/node_modules/expo-linking/ios`)"
   - "ExpoLogBox (from `../../../node_modules/.pnpm/@expo+log-box@55.0.12_@expo+dom-webview@55.0.6_expo@55.0.27_react-native@0.83.6_@babel+_1e0f793da4b9e21c8cf31dc8e43d7c84/node_modules/@expo/log-box`)"
@@ -2263,6 +2313,8 @@ DEPENDENCIES:
   - "React-logger (from `../../../node_modules/.pnpm/react-native@0.83.6_@babel+core@7.29.7_@react-native+metro-config@0.86.0_@babel+core@7._c5521100a4827aa5e8988ddfa42605f7/node_modules/react-native/ReactCommon/logger`)"
   - "React-Mapbuffer (from `../../../node_modules/.pnpm/react-native@0.83.6_@babel+core@7.29.7_@react-native+metro-config@0.86.0_@babel+core@7._c5521100a4827aa5e8988ddfa42605f7/node_modules/react-native/ReactCommon`)"
   - "React-microtasksnativemodule (from `../../../node_modules/.pnpm/react-native@0.83.6_@babel+core@7.29.7_@react-native+metro-config@0.86.0_@babel+core@7._c5521100a4827aa5e8988ddfa42605f7/node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)"
+  - "react-native-blob-util (from `../../../node_modules/.pnpm/react-native-blob-util@0.24.10_react-native@0.83.6_@babel+core@7.29.7_@react-native+met_3313f7a5477487a778f1b42fa74ec09e/node_modules/react-native-blob-util`)"
+  - "react-native-pdf (from `../../../node_modules/.pnpm/react-native-pdf@7.0.4_react-native-blob-util@0.24.10_react-native@0.83.6_@babel+core@7_3b679f801046b041ffa84b4b36c89261/node_modules/react-native-pdf`)"
   - "react-native-safe-area-context (from `../../../node_modules/.pnpm/react-native-safe-area-context@5.6.2_react-native@0.83.6_@babel+core@7.29.7_@react-nati_8de7fc561d1df0d7bb5b3bfcf9b0d91d/node_modules/react-native-safe-area-context`)"
   - "React-NativeModulesApple (from `../../../node_modules/.pnpm/react-native@0.83.6_@babel+core@7.29.7_@react-native+metro-config@0.86.0_@babel+core@7._c5521100a4827aa5e8988ddfa42605f7/node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)"
   - "React-networking (from `../../../node_modules/.pnpm/react-native@0.83.6_@babel+core@7.29.7_@react-native+metro-config@0.86.0_@babel+core@7._c5521100a4827aa5e8988ddfa42605f7/node_modules/react-native/ReactCommon/react/networking`)"
@@ -2321,6 +2373,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/.pnpm/expo@55.0.27_@babel+core@7.29.7_@expo+dom-webview@55.0.6_@expo+metro-runtime@55.0.11_ex_cd0c30d4f765a784a37b230cc70316af/node_modules/expo"
   ExpoAsset:
     :path: "../../../node_modules/.pnpm/expo-asset@55.0.17_expo@55.0.27_react-native@0.83.6_@babel+core@7.29.7_@react-native+me_1f891d844cf2f18f53aac656baa6640d/node_modules/expo-asset/ios"
+  ExpoDocumentPicker:
+    :path: "../../../node_modules/.pnpm/expo-document-picker@55.0.14_expo@55.0.27/node_modules/expo-document-picker/ios"
   ExpoDomWebView:
     :path: "../../../node_modules/.pnpm/@expo+dom-webview@55.0.6_expo@55.0.27_react-native@0.83.6_@babel+core@7.29.7_@react-nat_6785043b4e20c95f0d32240cc14b5a59/node_modules/@expo/dom-webview/ios"
   ExpoFileSystem:
@@ -2331,6 +2385,8 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/.pnpm/expo-glass-effect@55.0.11_expo@55.0.27_react-native@0.83.6_@babel+core@7.29.7_@react-na_ab155ceb0155ff25e751e573c705d2da/node_modules/expo-glass-effect/ios"
   ExpoImage:
     :path: "../../../node_modules/.pnpm/expo-image@55.0.11_expo@55.0.27_react-native-web@0.21.2_react-dom@19.2.0_react@19.2.0___db39dd13fb0a6b715b6a8ca02b1d3280/node_modules/expo-image/ios"
+  ExpoImagePicker:
+    :path: "../../../node_modules/.pnpm/expo-image-picker@55.0.21_expo@55.0.27/node_modules/expo-image-picker/ios"
   ExpoKeepAwake:
     :path: "../../../node_modules/.pnpm/expo-keep-awake@55.0.8_expo@55.0.27_react@19.2.0/node_modules/expo-keep-awake/ios"
   ExpoLinking:
@@ -2426,6 +2482,10 @@ EXTERNAL SOURCES:
     :path: "../../../node_modules/.pnpm/react-native@0.83.6_@babel+core@7.29.7_@react-native+metro-config@0.86.0_@babel+core@7._c5521100a4827aa5e8988ddfa42605f7/node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../../../node_modules/.pnpm/react-native@0.83.6_@babel+core@7.29.7_@react-native+metro-config@0.86.0_@babel+core@7._c5521100a4827aa5e8988ddfa42605f7/node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+  react-native-blob-util:
+    :path: "../../../node_modules/.pnpm/react-native-blob-util@0.24.10_react-native@0.83.6_@babel+core@7.29.7_@react-native+met_3313f7a5477487a778f1b42fa74ec09e/node_modules/react-native-blob-util"
+  react-native-pdf:
+    :path: "../../../node_modules/.pnpm/react-native-pdf@7.0.4_react-native-blob-util@0.24.10_react-native@0.83.6_@babel+core@7_3b679f801046b041ffa84b4b36c89261/node_modules/react-native-pdf"
   react-native-safe-area-context:
     :path: "../../../node_modules/.pnpm/react-native-safe-area-context@5.6.2_react-native@0.83.6_@babel+core@7.29.7_@react-nati_8de7fc561d1df0d7bb5b3bfcf9b0d91d/node_modules/react-native-safe-area-context"
   React-NativeModulesApple:
@@ -2511,11 +2571,13 @@ SPEC CHECKSUMS:
   EXConstants: dadbeba983acc30f855a919658a2b34fbd86615d
   Expo: b0f96de93d2e9ab7c6eabcf88597b13f6fe3f67e
   ExpoAsset: 7721c5c4ae2a7c3c8147a046727ac6c020b05648
+  ExpoDocumentPicker: f7bb7d99ad78f5d3c526930275b5cd34446276bc
   ExpoDomWebView: b2e9d601f9cb77d3c97da73234e175b64be91928
   ExpoFileSystem: 49ab894dee0818cb8b83d489fc51eafade73efb9
   ExpoFont: a7e34a75bdfb703fa07a0e87807f836236608c76
   ExpoGlassEffect: 2dedac2fe817f9b02d0dad29ce0aef7afebc5cd4
   ExpoImage: 5854bd51edd7c0a775755473598f9daeb3fde4e3
+  ExpoImagePicker: 34209e65a6422fb91f8696e1a76ca4e1fc886eae
   ExpoKeepAwake: d0eb7a0719500d2a43fbf29b6f79e84d70c75ebf
   ExpoLinking: 221ab136d976b632e04ff4023660cc9c24233d07
   ExpoLogBox: a678d36477ab9544fe63e0b5328a0716539b6774
@@ -2566,6 +2628,8 @@ SPEC CHECKSUMS:
   React-logger: 702a49dadb10a6bd63d56b297c3350b5ea552141
   React-Mapbuffer: bcd9f00a498b2981c7b390f00fd2b7cd6e0ead29
   React-microtasksnativemodule: 203b41906d627dac7d697bccba6137b630951fae
+  react-native-blob-util: 6f9e41c89dc83098f98db5ad608b89f247f9c6da
+  react-native-pdf: dac049a15aec41db452e372f85184d3f15741b12
   react-native-safe-area-context: 37e680fc4cace3c0030ee46e8987d24f5d3bdab2
   React-NativeModulesApple: 9068613f7650828eed29ead6fc0d0a1620117e6a
   React-networking: 233dd85e1b890ca191f64f0896153165571b3039
