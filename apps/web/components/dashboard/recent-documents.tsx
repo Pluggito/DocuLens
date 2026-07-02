@@ -1,18 +1,22 @@
-import { FileText, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+"use client"
 
-const DOCUMENTS = [
-  { id: "doc_1", name: "Q3_Financial_Report.pdf", type: "Financial", date: "Just now", status: "Processed", size: "2.4 MB" },
-  { id: "doc_2", name: "Employee_Onboarding_Form.pdf", type: "HR", date: "2 hrs ago", status: "Pending", size: "856 KB" },
-  { id: "doc_3", name: "Vendor_Contract_Acme.docx", type: "Legal", date: "5 hrs ago", status: "Error", size: "1.1 MB" },
-  { id: "doc_4", name: "Invoice_INV-2023-08.pdf", type: "Billing", date: "Yesterday", status: "Processed", size: "432 KB" },
-  { id: "doc_5", name: "NDA_TechSolutions.pdf", type: "Legal", date: "Yesterday", status: "Processed", size: "3.2 MB" },
-];
+import { FileText, CheckCircle2, Clock, AlertCircle } from "lucide-react";
+import { RecentDocument } from "@/lib/dashboard";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const StatusBadge = ({ status }: { status: string }) => {
-  if (status === "Processed") {
+  if (status === "Verified") {
     return (
-      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-600 border border-emerald-100">
-        <CheckCircle2 size={12} /> Processed
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 border border-emerald-200">
+        <CheckCircle2 size={12} /> Verified
+      </span>
+    );
+  }
+  if (status === "Needs Review") {
+    return (
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-600 border border-blue-100">
+        <AlertCircle size={12} /> Needs Review
       </span>
     );
   }
@@ -30,7 +34,23 @@ const StatusBadge = ({ status }: { status: string }) => {
   );
 };
 
-export function RecentDocuments() {
+export function RecentDocuments({ documents }: { documents: RecentDocument[] }) {
+  const router = useRouter();
+
+  if (documents.length === 0) {
+    return (
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.03)] overflow-hidden">
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-slate-900 tracking-tight">Recent Documents</h2>
+        </div>
+        <div className="p-12 text-center text-slate-500">
+          <FileText size={32} className="mx-auto mb-3 text-slate-300" />
+          <p>No documents processed yet.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.03)] overflow-hidden">
       <div className="p-6 border-b border-slate-100 flex items-center justify-between">
@@ -51,14 +71,18 @@ export function RecentDocuments() {
             </tr>
           </thead>
           <tbody className="text-sm divide-y divide-slate-100">
-            {DOCUMENTS.map((doc) => (
-              <tr key={doc.id} className="hover:bg-slate-50/50 transition-colors group">
+            {documents.map((doc) => (
+              <tr 
+                key={doc.id} 
+                className="hover:bg-slate-50/50 transition-colors group cursor-pointer"
+                onClick={() => router.push(`/dashboard/documents/${doc.id}`)}
+              >
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-blue-50 text-blue-500 rounded-lg group-hover:scale-105 transition-transform">
                       <FileText size={16} />
                     </div>
-                    <span className="font-medium text-slate-700">{doc.name}</span>
+                    <span className="font-medium text-slate-700 max-w-[200px] truncate block" title={doc.name}>{doc.name}</span>
                   </div>
                 </td>
                 <td className="px-6 py-4 text-slate-500">{doc.type}</td>

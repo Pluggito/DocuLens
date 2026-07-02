@@ -841,6 +841,14 @@ pnpm --filter web dev         # Run web app
 - **Key decision**: Drizzle over Prisma (lighter, no codegen) — *pending user confirmation*
 - **Status**: Foundation scaffolded, no features implemented yet
 
+### 2026-07-02 — Web Dashboard Upload & Next.js 15 Fixes
+
+- **What**: Built out the file upload zone on the web dashboard and fixed several backend Next.js API route issues.
+- **UI UX**: Implemented a dynamic, sleek progress bar for the upload and AI processing states in the dashboard (`upload-zone.tsx`) to improve user feedback.
+- **Next.js 15 Compatibility**: Updated dynamic API routes (like `/api/documents/[id]/route.ts`) to use asynchronous `params` Promises, fixing Next.js 15 route handler typing errors.
+- **Vercel Blob Integration**: Upgraded `@vercel/blob` to v2.5.0. Enforced `access: 'public'` for blob uploads to ensure direct preview links in the dashboard work without complex signed URL generation.
+- **Tesseract.js Bundling Bug**: Fixed a notorious Turbopack/Next.js bug where `tesseract.js` worker scripts would fail with `MODULE_NOT_FOUND` by adding `serverExternalPackages: ['tesseract.js', 'pdf2pic']` to `next.config.js`.
+
 ---
 
 > **📌 Note**: This document is a living reference. It will be updated as each feature is implemented. Check the [Build Log](#16-build-log--changelog) section for the latest progress.
