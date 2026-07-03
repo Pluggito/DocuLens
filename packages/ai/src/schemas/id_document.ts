@@ -10,6 +10,10 @@ export const idDocumentSchema = z.object({
   issueDate: z.string().optional().describe('The date the document was issued (YYYY-MM-DD or as written)'),
   expiryDate: z.string().optional().describe('The date the document expires (YYYY-MM-DD or as written)'),
   issuingAuthority: z.string().optional().describe('The authority or state/country that issued the document'),
+  keyInformation: z.array(z.object({
+    key: z.string().describe("The name of the custom field"),
+    value: z.string().describe("The value of the custom field")
+  })).optional().describe("Any additional custom fields found in the document"),
   summary: z.string().describe('A brief, 1-2 sentence summary of the ID document'),
 });
 

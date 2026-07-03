@@ -25,4 +25,8 @@ export const invoiceSchema = z.object({
   total: z.number().describe("The total amount due"),
   currency: z.string().default("USD").describe("The currency used (e.g., USD, NGN, EUR)"),
   paymentTerms: z.string().nullable(),
+  keyInformation: z.array(z.object({
+    key: z.string().describe("The name of the custom field (e.g., 'Matric No', 'Account ID', 'Reference')"),
+    value: z.string().describe("The value of the custom field")
+  })).optional().describe("Any additional custom fields found on the invoice that don't fit the standard schema"),
 });

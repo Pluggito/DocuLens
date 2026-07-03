@@ -60,11 +60,14 @@ export function UploadZone() {
     setIsDragOver(false);
   };
 
+  const [processingSteps, setProcessingSteps] = useState<{message: string, done: boolean}[]>([]);
+
   const processFile = async (file: File) => {
     setSelectedFile(file);
     setState("uploading");
     setError(null);
     setResult(null);
+    setProcessingSteps([]);
 
     try {
       // 1. Upload the file
@@ -97,14 +100,56 @@ export function UploadZone() {
         }),
       });
 
-      if (!processRes.ok) {
-        const errorData = await processRes.json();
-        throw new Error(errorData.error || "Failed to process document");
+      if (!processRes.ok || !processRes.body) {
+        throw new Error("Failed to start processing document");
       }
 
-      const processData = await processRes.json();
-      setResult(processData.document);
-      setState("success");
+      const reader = processRes.body.getReader();
+      const decoder = new TextDecoder();
+      
+      let finalResult = null;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n');
+        
+        let currentEvent = '';
+        for (const line of lines) {
+          if (line.startsWith('event: ')) {
+            currentEvent = line.substring(7).trim();
+          } else if (line.startsWith('data: ')) {
+            const dataStr = line.substring(6).trim();
+            if (!dataStr) continue;
+            try {
+              const data = JSON.parse(dataStr);
+              if (currentEvent === 'progress') {
+                setProcessingSteps(prev => {
+                  // Mark all previous as done
+                  const updated = prev.map(p => ({ ...p, done: true }));
+                  // Add new step
+                  return [...updated, { message: data.step, done: false }];
+                });
+              } else if (currentEvent === 'complete') {
+                finalResult = data.document;
+              } else if (currentEvent === 'error') {
+                throw new Error(data.message);
+              }
+            } catch (e) {
+              console.error("SSE parse error", e);
+            }
+          }
+        }
+      }
+
+      if (finalResult) {
+        setResult(finalResult);
+        setState("success");
+      } else {
+        throw new Error("Processing finished without result.");
+      }
     } catch (err) {
       console.error(err);
       setError(err instanceof Error ? err.message : "An unknown error occurred");
@@ -208,6 +253,24 @@ export function UploadZone() {
               </div>
               <p className="text-xs text-slate-400 mt-2 font-medium">{progress}%</p>
             </div>
+
+            {/* Processing Steps Checklist */}
+            {state === "processing" && processingSteps.length > 0 && (
+              <div className="w-full mt-4 text-left space-y-2 max-w-xs mx-auto">
+                {processingSteps.map((step, i) => (
+                  <div key={i} className="flex items-center gap-2 text-sm animate-in slide-in-from-bottom-2 fade-in duration-300">
+                    {step.done ? (
+                      <CheckCircle2 size={16} className="text-green-500" />
+                    ) : (
+                      <Loader2 size={16} className="text-blue-500 animate-spin" />
+                    )}
+                    <span className={step.done ? "text-slate-500" : "text-slate-800 font-medium"}>
+                      {step.message}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
