@@ -38,7 +38,7 @@ ${text}`;
 
   try {
     const { object } = await generateObject({
-      model: google('gemini-2.0-flash'),
+      model: google('gemini-2.5-flash'),
       schema: classificationSchema,
       prompt,
     });
@@ -120,5 +120,48 @@ Return raw JSON. Do NOT wrap it in markdown code blocks like \`\`\`json. Just th
         throw new Error("All LLM providers failed to classify document.");
       }
     }
+  }
+}
+
+export async function classifyDocumentWithVision(fileUrl: string, mimeType?: string): Promise<DocumentClassification> {
+  const promptText = `You are a document classification expert. Analyze the visual layout and text of this document and determine what type of document it is.
+
+Consider key indicators:
+- Invoices: line items, totals, "invoice number", vendor/billing info
+- Receipts: merchant name, transaction date, items purchased, total paid
+- CVs/Resumes: personal info, work experience, education, skills
+- Contracts: parties involved, terms, signatures, legal language
+- Bank Statements: account number, transactions, balance
+- ID Documents: name, date of birth, ID number, nationality
+- Letters: salutation, body text, closing, signature`;
+
+  try {
+    let buffer: Buffer;
+    if (fileUrl.startsWith('http')) {
+      const response = await fetch(fileUrl);
+      buffer = Buffer.from(await response.arrayBuffer());
+    } else {
+      const fs = require('fs');
+      buffer = fs.readFileSync(fileUrl);
+    }
+
+    const { object } = await generateObject({
+      model: google('gemini-2.5-flash'),
+      schema: classificationSchema,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: promptText },
+            { type: 'file', data: buffer, mimeType: mimeType || 'application/pdf', mediaType: mimeType || 'application/pdf' } as any
+          ]
+        }
+      ]
+    });
+    return object;
+  } catch (error) {
+    console.warn("Vision classification failed, falling back to text-based classification...", error);
+    // If vision fails (e.g. file too large or unsupported), we will throw to let pipeline fallback to OCR -> Text Classify
+    throw error;
   }
 }

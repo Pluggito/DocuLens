@@ -8,7 +8,11 @@ export const contractSchema = z.object({
   governingLaw: z.string().optional().describe('The jurisdiction or governing law mentioned in the contract'),
   keyClauses: z.array(z.string()).describe('Summary of the most important clauses or terms in the contract'),
   signatures: z.array(z.string()).optional().describe('List of names of people who have signed the contract'),
-  summary: z.string().describe('A brief, 1-3 sentence summary of the contract'),
+  summary: z.string().describe("A brief, 1-2 sentence summary of the contract"),
+  keyInformation: z.array(z.object({
+    key: z.string().describe("The name of the custom field"),
+    value: z.string().describe("The value of the custom field")
+  })).optional().describe("Any additional custom fields found in the document"),
 });
 
 export type ContractExtractedData = z.infer<typeof contractSchema>;

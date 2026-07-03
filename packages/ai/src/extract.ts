@@ -10,15 +10,16 @@ export async function extractStructuredData(
 ) {
   const schema = getSchemaForType(documentType);
   const prompt = `You are a data extraction expert. Extract all relevant structured data from this ${documentType}.
-
+  
 Be precise and thorough. If a field cannot be determined from the text, use null.
+CRITICAL: If you see ANY key-value pairs or distinct fields in the document that do not fit into the standard schema properties (e.g. Matric No, Level, Department, Student ID, internal references, custom metadata), you MUST extract them and place them into the "keyInformation" array as key-value pairs.
 
 Document text:
 ${text}`;
 
   try {
     const { object } = await generateObject({
-      model: google('gemini-2.0-flash'),
+      model: google('gemini-2.5-flash'),
       schema,
       prompt,
     });
@@ -104,5 +105,47 @@ Return ONLY raw JSON that strictly matches the expected fields for a ${documentT
         throw new Error("All LLM providers failed to extract structured data.");
       }
     }
+  }
+}
+
+export async function extractStructuredDataWithVision(
+  fileUrl: string,
+  documentType: DocumentType,
+  mimeType?: string
+) {
+  const schema = getSchemaForType(documentType);
+  const promptText = `You are a data extraction expert. Extract all relevant structured data from this ${documentType} by reading the image directly.
+
+Be precise and thorough. If a field cannot be determined from the visual layout, use null.
+CRITICAL: If you see ANY key-value pairs or distinct fields in the document that do not fit into the standard schema properties (e.g. Matric No, Level, Department, Student ID, internal references, custom metadata), you MUST extract them and place them into the "keyInformation" array as key-value pairs.`;
+
+  try {
+    let buffer: Buffer;
+    if (fileUrl.startsWith('http')) {
+      const response = await fetch(fileUrl);
+      buffer = Buffer.from(await response.arrayBuffer());
+    } else {
+      const fs = require('fs');
+      buffer = fs.readFileSync(fileUrl);
+    }
+
+    const { object } = await generateObject({
+      model: google('gemini-2.5-flash'),
+      schema,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: promptText },
+            { type: 'file', data: buffer, mimeType: mimeType || 'application/pdf', mediaType: mimeType || 'application/pdf' } as any
+          ]
+        }
+      ]
+    });
+    return object;
+  } catch (error) {
+    console.warn("Vision extraction failed...", error);
+    // Return null or throw. In parallel pipeline, we will catch and return null so we can fallback to OCR only.
+    throw error;
   }
 }

@@ -29,10 +29,10 @@ export function setAuthCookies(
   accessToken: string,
   refreshToken: string
 ): void {
-  // Access token: 15 minutes
+  // Access token: 7 days
   response.cookies.set(ACCESS_TOKEN_COOKIE, accessToken, {
     ...baseCookieOptions,
-    maxAge: 15 * 60,
+    maxAge: 7 * 24 * 60 * 60,
   });
 
   // Refresh token: 30 days

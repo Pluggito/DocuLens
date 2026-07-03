@@ -55,9 +55,9 @@ export function RecentDocuments({ documents }: { documents: RecentDocument[] }) 
     <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.03)] overflow-hidden">
       <div className="p-6 border-b border-slate-100 flex items-center justify-between">
         <h2 className="text-lg font-bold text-slate-900 tracking-tight">Recent Documents</h2>
-        <button className="text-sm font-medium text-orange-500 hover:text-orange-600 transition-colors">
+        <Link href="/dashboard/documents" className="text-sm font-medium text-orange-500 hover:text-orange-600 transition-colors">
           View All
-        </button>
+        </Link>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[700px]">

@@ -3,7 +3,7 @@ import { SignJWT, jwtVerify } from "jose";
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "doculens-dev-secret-change-in-production"
 );
-const ACCESS_TOKEN_EXPIRY = "15m"; // 15 minutes
+const ACCESS_TOKEN_EXPIRY = "7d"; // 7 days (increased from 15m to prevent frequent 401s during dev)
 const REFRESH_TOKEN_EXPIRY_DAYS = 7;
 
 /**

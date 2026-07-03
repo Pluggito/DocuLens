@@ -24,7 +24,11 @@ export const cvSchema = z.object({
     graduationDate: z.string().nullable(),
     gpa: z.string().nullable(),
   })),
-  skills: z.array(z.string()),
+  skills: z.array(z.string()).describe('List of skills extracted from the CV'),
+  keyInformation: z.array(z.object({
+    key: z.string().describe("The name of the custom field"),
+    value: z.string().describe("The value of the custom field")
+  })).optional().describe("Any additional custom fields found in the document"),
   certifications: z.array(z.object({
     name: z.string(),
     issuer: z.string().nullable(),

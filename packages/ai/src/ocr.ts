@@ -1,6 +1,5 @@
 import Tesseract from 'tesseract.js';
 import { fromBuffer } from 'pdf2pic';
-const pdfParse = require('pdf-parse');
 
 export async function extractText(fileUrl: string, mimeType?: string): Promise<string> {
   let imageToProcess: string | Buffer = fileUrl;
@@ -24,6 +23,8 @@ export async function extractText(fileUrl: string, mimeType?: string): Promise<s
 
     try {
       console.log('Attempting native text extraction via pdf-parse...');
+      const pdfParseLib = require('pdf-parse');
+      const pdfParse = typeof pdfParseLib === 'function' ? pdfParseLib : pdfParseLib.default;
       const data = await pdfParse(buffer);
       if (data.text && data.text.trim().length > 50) {
         // Native text extracted successfully

@@ -12,6 +12,10 @@ export const bankStatementSchema = z.object({
   totalWithdrawals: z.number().optional().describe('The total amount of withdrawals or debits during the period'),
   currency: z.string().optional().describe('The currency of the statement (e.g., USD, EUR, GBP)'),
   summary: z.string().describe('A brief, 1-2 sentence summary of the bank statement'),
+  keyInformation: z.array(z.object({
+    key: z.string().describe("The name of the custom field"),
+    value: z.string().describe("The value of the custom field")
+  })).optional().describe("Any additional custom fields found in the document"),
 });
 
 export type BankStatementExtractedData = z.infer<typeof bankStatementSchema>;
