@@ -113,11 +113,18 @@ User uploads file
 └────────┬────────┘
          │
          ▼
-┌─────────────────┐
-│  Tesseract.js   │ ← Extract raw text from image/PDF
-│  (OCR)          │
-└────────┬────────┘
-         │ raw text
+┌───────────────────────────────────────────────┐
+│          Parallel Extraction Engines          │
+│                                               │
+│  ┌─────────────────┐     ┌─────────────────┐  │
+│  │  Tesseract.js   │     │  Gemini Vision  │  │
+│  │  (OCR Text)     │     │  (Visual Data)  │  │
+│  └────────┬────────┘     └────────┬────────┘  │
+│           │                       │           │
+└───────────┼───────────────────────┼───────────┘
+            ▼                       ▼
+    raw text (fallback)       raw text (visual)
+            │                       │
          ▼
 ┌─────────────────┐
 │  Gemini Flash   │ ← AI Call #1: "What type of document is this?"
@@ -427,6 +434,7 @@ ${text}`,
 import { extractText } from './ocr';
 import { classifyDocument } from './classify';
 import { extractStructuredData } from './extract';
+import { extractWithVision } from './cross-validate';
 
 export interface ProcessingResult {
   classification: {
@@ -448,11 +456,15 @@ export async function processDocument(fileUrl: string): Promise<ProcessingResult
   // Stage 2: Classify
   const classification = await classifyDocument(rawText);
 
-  // Stage 3 & 4: Route to schema + Extract
-  const extractedData = await extractStructuredData(
-    rawText,
-    classification.documentType,
-  );
+  // Stage 3 & 4: Route to schema + Extract (Parallel Engine Cross-Validation)
+  // We run Gemini Vision extraction and Standard OCR extraction simultaneously
+  const [visionData, ocrExtractedData] = await Promise.all([
+    extractWithVision(fileUrl, classification.documentType),
+    extractStructuredData(rawText, classification.documentType)
+  ]);
+  
+  // Prefer Vision data for general fields, use OCR as fallback
+  const extractedData = visionData || ocrExtractedData;
 
   return {
     classification,
@@ -496,6 +508,10 @@ export const invoiceSchema = z.object({
   total: z.number(),
   currency: z.string().default('USD'),
   paymentTerms: z.string().nullable(),
+  keyInformation: z.array(z.object({
+    key: z.string().describe("Name of the custom field (e.g., 'Tax ID', 'Reference')"),
+    value: z.string()
+  })).describe("Any additional custom fields not covered by the standard schema").optional(),
 });
 ```
 
@@ -848,6 +864,14 @@ pnpm --filter web dev         # Run web app
 - **Next.js 15 Compatibility**: Updated dynamic API routes (like `/api/documents/[id]/route.ts`) to use asynchronous `params` Promises, fixing Next.js 15 route handler typing errors.
 - **Vercel Blob Integration**: Upgraded `@vercel/blob` to v2.5.0. Enforced `access: 'public'` for blob uploads to ensure direct preview links in the dashboard work without complex signed URL generation.
 - **Tesseract.js Bundling Bug**: Fixed a notorious Turbopack/Next.js bug where `tesseract.js` worker scripts would fail with `MODULE_NOT_FOUND` by adding `serverExternalPackages: ['tesseract.js', 'pdf2pic']` to `next.config.js`.
+
+### 2026-07-04 — Parallel AI Pipeline & UX Streaming
+
+- **What**: Major upgrade to the extraction pipeline, transitioning from sequential OCR to parallel cross-validated (Vision + OCR) extraction.
+- **AI Pipeline**: Implemented `cross-validate.ts` to run Tesseract.js and Gemini 2.0 Flash Vision directly on the file simultaneously. This solves the issue of OCR mangling complex layouts (like tables or hierarchical forms) before the LLM sees it. 
+- **Dynamic Schemas**: Added a flexible `keyInformation: { key, value }[]` property across all schemas (generic, receipt, invoice, etc.). Prompts were updated to explicitly extract unmapped fields. This allows the system to seamlessly handle random, country-specific fields (e.g. "Origin LGA", "Sponsor Details" on Nigerian forms) without requiring hardcoded schema updates.
+- **UX Streaming (SSE)**: Upgraded the `/api/documents/process` route to return a `text/event-stream`. The web UI now displays real-time checklist progress (e.g., "Classifying document...", "Running Vision extraction...") instead of a static loader, drastically improving perceived performance during 10-15s AI waits.
+- **Dev Auth**: Increased dev environment access token and cookie expiration from 15 minutes to 7 days. This prevents silent `401 Unauthorized` errors when testing the dashboard for extended periods without a refresh token flow.
 
 ---
 
