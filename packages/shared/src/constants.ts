@@ -44,7 +44,7 @@ export const MAX_PAGE_SIZE = 100;
 
 // ─── App Info ───
 
-export const APP_NAME = "DocuLens AI";
+export const APP_NAME = "DocuLens Studio";
 export const APP_DESCRIPTION =
   "AI-powered document intelligence platform. Upload any document and get structured data back automatically.";
 export const APP_VERSION = "0.1.0";

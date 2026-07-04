@@ -46,7 +46,7 @@ export default function SignInScreen() {
       <StatusBar style="light" />
       <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
         <View style={styles.headerContainer}>
-          <Text style={styles.logo}>DocuLens</Text>
+          <Text style={styles.logo}>DocuLens Studio</Text>
           <Text style={styles.tagline}>AI-Powered Document Intelligence</Text>
         </View>
 

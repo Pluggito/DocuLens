@@ -99,7 +99,7 @@ export function Topbar({ user }: { user?: any }) {
                 <div className="w-7 h-7 rounded-full bg-slate-900 flex items-center justify-center shadow-sm">
                   <span className="text-white font-bold text-xs">D</span>
                 </div>
-                DocuLens
+                DocuLens Studio
               </Link>
               <button 
                 className="p-2 text-slate-400 hover:bg-slate-100 rounded-lg transition-colors"

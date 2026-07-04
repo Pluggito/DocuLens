@@ -50,7 +50,7 @@ export default function SignInPage() {
             <span className="text-white font-bold text-2xl">D</span>
           </div>
           <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">Welcome Back</h2>
-          <p className="text-slate-500 text-sm">Sign in to your DocuLens dashboard</p>
+          <p className="text-slate-500 text-sm">Sign in to your DocuLens Studio dashboard</p>
         </div>
 
         {error && (

@@ -8,7 +8,7 @@ export default function LandingPage() {
           <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center shadow-sm">
             <span className="text-white font-bold text-sm">D</span>
           </div>
-          DocuLens
+          DocuLens Studio
         </Link>
         <div className="flex gap-6 items-center">
           <Link href="/auth/signin" className="text-slate-600 font-medium transition-colors hover:text-slate-900">
@@ -28,7 +28,7 @@ export default function LandingPage() {
           
           <div className="inline-flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-5 py-2.5 rounded-full text-sm font-medium mb-10 shadow-sm transition-transform hover:scale-105">
             <span className="flex h-2 w-2 rounded-full bg-orange-400"></span>
-            DocuLens Enterprise is live
+            DocuLens Studio Enterprise is live
           </div>
           
           <h1 className="text-[clamp(3.5rem,8vw,6.5rem)] font-bold text-slate-900 leading-[1.05] tracking-tighter mb-8 max-w-[1000px]">
@@ -101,7 +101,7 @@ export default function LandingPage() {
       </main>
 
       <footer className="border-t border-slate-200 py-12 px-[5%] text-center text-slate-400 text-sm mt-10 relative z-10">
-        <p>&copy; {new Date().getFullYear()} DocuLens. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} DocuLens Studio. All rights reserved.</p>
       </footer>
     </div>
   );
