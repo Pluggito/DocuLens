@@ -3,6 +3,8 @@ import { getSessionUserId } from '@/lib/auth';
 import { getDb, documents, eq, and } from '@repo/db';
 import { processDocument } from '@repo/ai';
 
+export const maxDuration = 60; // Extend Vercel Hobby tier timeout up to 60 seconds
+
 export async function POST(request: Request) {
   try {
     const userId = await getSessionUserId();
