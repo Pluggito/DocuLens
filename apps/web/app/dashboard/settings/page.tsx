@@ -40,7 +40,7 @@ export default async function SettingsPage() {
               </div>
               <div>
                 <h3 className="font-semibold text-slate-900">API Keys</h3>
-                <p className="text-sm text-slate-500 mt-0.5">Manage your API keys for integrating DocuLens into your own apps.</p>
+                <p className="text-sm text-slate-500 mt-0.5">Manage your API keys for integrating DocuLens Studio into your own apps.</p>
               </div>
             </div>
             
@@ -68,7 +68,7 @@ export default async function SettingsPage() {
       </div>
       
       <div className="text-center">
-        <p className="text-sm text-slate-400">DocuLens Platform v1.0.0</p>
+        <p className="text-sm text-slate-400">DocuLens Studio Platform v1.0.0</p>
       </div>
     </div>
   );

@@ -36,7 +36,7 @@ export function Sidebar() {
           <div className="w-7 h-7 rounded-full bg-slate-900 flex items-center justify-center shadow-sm">
             <span className="text-white font-bold text-xs">D</span>
           </div>
-          DocuLens
+          DocuLens Studio
         </Link>
       </div>
       
