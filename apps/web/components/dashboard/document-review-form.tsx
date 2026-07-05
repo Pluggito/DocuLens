@@ -62,12 +62,12 @@ export function DocumentReviewForm({ document }: { document: any }) {
     if (!formData) return;
     const blob = new Blob([JSON.stringify(formData, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = window.document.createElement("a");
     a.href = url;
     a.download = `${document.documentType || 'document'}_data.json`;
-    document.body.appendChild(a);
+    window.document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    window.document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
@@ -88,12 +88,12 @@ export function DocumentReviewForm({ document }: { document: any }) {
 
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = window.document.createElement("a");
     a.href = url;
     a.download = `${document.documentType || 'document'}_data.csv`;
-    document.body.appendChild(a);
+    window.document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    window.document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
