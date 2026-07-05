@@ -41,8 +41,6 @@ export async function processDocument(
   }
 
   // Stage 2: Parallel Extraction
-  // We budget 50s total for extraction — leaving 10s for DB save + stream close
-  // before Vercel's 60s hard limit kicks in.
   onProgress?.('Running OCR and Vision extraction in parallel...');
   let rawText = '';
 
@@ -82,13 +80,18 @@ export async function processDocument(
     }
   })();
 
+  // Calculate how much time we have left to stay safely under Vercel's 60s limit
+  const timeUsedSoFar = Date.now() - startTime;
+  const VERCEL_SAFE_LIMIT_MS = 54_000; // 54 seconds (gives 6s buffer for DB writes and network)
+  const timeLeftMs = Math.max(10_000, VERCEL_SAFE_LIMIT_MS - timeUsedSoFar);
+
   const [ocrData, visionData] = await Promise.all([
-    withTimeout(ocrPromise, 45_000, 'OCR extraction'),
-    withTimeout(visionPromise, 50_000, 'Vision extraction'),
+    withTimeout(ocrPromise, timeLeftMs - 2000, 'OCR extraction'),
+    withTimeout(visionPromise, timeLeftMs, 'Vision extraction'),
   ]);
 
   if (!ocrData && !visionData) {
-    throw new Error('Both OCR and Vision extraction pipelines failed.');
+    throw new Error(`Extraction timed out. Document is too large to process within the serverless limit.`);
   }
 
   // Stage 3: Cross Validate
