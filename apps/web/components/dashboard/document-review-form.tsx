@@ -58,6 +58,45 @@ export function DocumentReviewForm({ document }: { document: any }) {
     }
   };
 
+  const downloadJSON = () => {
+    if (!formData) return;
+    const blob = new Blob([JSON.stringify(formData, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${document.documentType || 'document'}_data.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadCSV = () => {
+    if (!formData) return;
+    
+    const keys = Object.keys(formData);
+    let csvContent = keys.join(",") + "\n";
+    
+    const row = keys.map(key => {
+      const val = formData[key];
+      if (typeof val === 'object' && val !== null) {
+        return `"${JSON.stringify(val).replace(/"/g, '""')}"`;
+      }
+      return `"${String(val ?? '').replace(/"/g, '""')}"`;
+    });
+    csvContent += row.join(",");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${document.documentType || 'document'}_data.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const handleDownload = () => {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
@@ -215,12 +254,24 @@ export function DocumentReviewForm({ document }: { document: any }) {
         <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
           Extracted Data
         </h3>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap justify-end">
+          <button
+            onClick={downloadJSON}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors shadow-sm"
+          >
+            <Download size={14} /> JSON
+          </button>
+          <button
+            onClick={downloadCSV}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors shadow-sm"
+          >
+            <Download size={14} /> CSV
+          </button>
           <button 
             onClick={handleDownload}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors shadow-sm"
           >
-            <FileText size={14} /> Download Summary
+            <FileText size={14} /> Summary
           </button>
           {isVerified && (
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-700">
