@@ -4,4 +4,4 @@ export * as schema from "./schema";
 export { createId } from "./utils";
 
 // Re-export drizzle-orm utilities for convenience
-export { eq, and, or, desc, asc, sql, like, ilike, inArray, count, gte } from "drizzle-orm";
+export { eq, and, or, desc, asc, sql, like, ilike, inArray, count, gte, ne } from "drizzle-orm";
