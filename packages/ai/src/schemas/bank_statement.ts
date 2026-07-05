@@ -12,6 +12,13 @@ export const bankStatementSchema = z.object({
   totalWithdrawals: z.number().optional().describe('The total amount of withdrawals or debits during the period'),
   currency: z.string().optional().describe('The currency of the statement (e.g., USD, EUR, GBP)'),
   summary: z.string().describe('A brief, 1-2 sentence summary of the bank statement'),
+  transactions: z.array(z.object({
+    date: z.string().optional().describe('Date of the transaction (YYYY-MM-DD or as written)'),
+    description: z.string().describe('Description or reference of the transaction'),
+    amount: z.number().describe('Amount of the transaction (absolute value)'),
+    type: z.enum(['credit', 'debit']).describe('Whether the transaction is a credit (deposit) or debit (withdrawal)'),
+    balance: z.number().optional().describe('The running balance after the transaction'),
+  })).optional().describe('A list of individual transactions extracted from the statement tables'),
   keyInformation: z.array(z.object({
     key: z.string().describe("The name of the custom field"),
     value: z.string().describe("The value of the custom field")
