@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { put } from '@vercel/blob';
 import { getSessionUserId } from '@/lib/auth';
-import { getDb, documents, eq, and, gte, desc } from '@repo/db';
+import { getDb, documents, eq, and, gte, desc, ne } from '@repo/db';
 
 export async function POST(request: Request) {
   try {
@@ -23,13 +23,18 @@ export async function POST(request: Request) {
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
 
-    // Fetch all user's documents created today, ordered by newest first
+    // Fetch all user's documents created today that did NOT fail, ordered by newest first
+    // Failed uploads are excluded so they don't count against the user's quota.
     const userDocsToday = await db.select({ createdAt: documents.createdAt })
       .from(documents)
-      .where(and(eq(documents.userId, userId), gte(documents.createdAt, startOfDay)))
+      .where(and(
+        eq(documents.userId, userId),
+        gte(documents.createdAt, startOfDay),
+        ne(documents.processingStatus, 'failed')
+      ))
       .orderBy(desc(documents.createdAt));
 
-    // 1. Enforce Daily Quota (Max 3 per day)
+    // 1. Enforce Daily Quota (Max 3 non-failed per day)
     if (userDocsToday.length >= 3) {
       return NextResponse.json({ 
         error: 'Daily limit reached', 

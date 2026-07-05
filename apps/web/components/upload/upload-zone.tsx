@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { UploadCloud, File, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import Link from "next/link";
+import { UploadCloud, File, Loader2, CheckCircle2, AlertCircle, Download, ArrowRight } from "lucide-react";
 import { ExtractionResult } from "./extraction-result";
 
 type UploadState = "idle" | "uploading" | "processing" | "success" | "error";
@@ -167,6 +168,46 @@ export function UploadZone() {
     }
   };
 
+  const downloadJSON = () => {
+    if (!result?.extractedData) return;
+    const blob = new Blob([JSON.stringify(result.extractedData, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${result.documentType || 'document'}_data.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadCSV = () => {
+    if (!result?.extractedData) return;
+    
+    const data = result.extractedData;
+    const keys = Object.keys(data);
+    let csvContent = keys.join(",") + "\n";
+    
+    const row = keys.map(key => {
+      const val = data[key];
+      if (typeof val === 'object' && val !== null) {
+        return `"${JSON.stringify(val).replace(/"/g, '""')}"`;
+      }
+      return `"${String(val ?? '').replace(/"/g, '""')}"`;
+    });
+    csvContent += row.join(",");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${result.documentType || 'document'}_data.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   if (state === "success" && result) {
     return (
       <div className="space-y-6">
@@ -178,11 +219,34 @@ export function UploadZone() {
               <p className="text-sm text-green-700">{selectedFile?.name}</p>
             </div>
           </div>
-          <button 
-            onClick={reset}
-            className="text-sm font-medium text-green-800 hover:text-green-900 bg-green-200/50 hover:bg-green-200 px-4 py-2 rounded-lg transition-colors"
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={reset}
+              className="text-sm font-medium text-green-800 hover:text-green-900 bg-green-200/50 hover:bg-green-200 px-4 py-2 rounded-lg transition-colors"
+            >
+              Upload Another
+            </button>
+            <Link 
+              href={`/dashboard/documents/${result.id}`}
+              className="text-sm font-medium text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5"
+            >
+              Review Document <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <button
+            onClick={downloadJSON}
+            className="text-sm font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 px-4 py-2 rounded-lg transition-colors shadow-sm flex items-center gap-1.5"
           >
-            Upload Another
+            <Download size={16} className="text-slate-400" /> Download JSON
+          </button>
+          <button
+            onClick={downloadCSV}
+            className="text-sm font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 px-4 py-2 rounded-lg transition-colors shadow-sm flex items-center gap-1.5"
+          >
+            <Download size={16} className="text-slate-400" /> Download CSV
           </button>
         </div>
         

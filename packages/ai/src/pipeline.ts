@@ -41,9 +41,22 @@ export async function processDocument(
   }
 
   // Stage 2: Parallel Extraction
+  // We budget 50s total for extraction — leaving 10s for DB save + stream close
+  // before Vercel's 60s hard limit kicks in.
   onProgress?.('Running OCR and Vision extraction in parallel...');
   let rawText = '';
-  
+
+  const withTimeout = <T>(promise: Promise<T>, ms: number, label: string): Promise<T | null> =>
+    Promise.race([
+      promise,
+      new Promise<null>((resolve) =>
+        setTimeout(() => {
+          console.warn(`${label} timed out after ${ms}ms — falling back gracefully.`);
+          resolve(null);
+        }, ms)
+      ),
+    ]);
+
   const ocrPromise = (async () => {
     try {
       rawText = await extractText(fileUrl, mimeType);
@@ -69,7 +82,10 @@ export async function processDocument(
     }
   })();
 
-  const [ocrData, visionData] = await Promise.all([ocrPromise, visionPromise]);
+  const [ocrData, visionData] = await Promise.all([
+    withTimeout(ocrPromise, 45_000, 'OCR extraction'),
+    withTimeout(visionPromise, 50_000, 'Vision extraction'),
+  ]);
 
   if (!ocrData && !visionData) {
     throw new Error('Both OCR and Vision extraction pipelines failed.');
